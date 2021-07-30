@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
@@ -40,7 +38,6 @@ class PaymentServiceImplTest {
     @BeforeEach
     void setUp() {
         payment = Payment.builder()
-                .amount(BigDecimal.valueOf(100))
                 .state(PaymentState.NEW)
                 .id(1L)
                 .build();

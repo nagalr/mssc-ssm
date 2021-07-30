@@ -16,6 +16,8 @@ import java.util.EnumSet;
  *
  * Config class extends the 'StateMachineConfigurerAdapter' class,
  * and overwrite few if its methods to config the states.
+ * '@EnableStateMachineFactory' -Annotation which imports @Configurations related
+ *  to building state machine factories.
  */
 
 @Slf4j

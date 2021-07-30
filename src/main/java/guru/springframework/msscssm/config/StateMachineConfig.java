@@ -55,12 +55,20 @@ public class StateMachineConfig extends StateMachineConfigurerAdapter<PaymentSta
                 .withExternal().source(PaymentState.NEW).target(PaymentState.PRE_AUTH_ERROR).event(PaymentEvent.PRE_ATH_DECLINE);
     }
 
+    /*
+     Overwrite a method to Implement a Listener to state changes, and log the details.
+     */
     @Override
     public void configure(StateMachineConfigurationConfigurer<PaymentState, PaymentEvent> config) throws Exception {
         StateMachineListenerAdapter<PaymentState, PaymentEvent> adapter = new StateMachineListenerAdapter<>() {
             @Override
             public void stateChanged(State<PaymentState, PaymentEvent> from, State<PaymentState, PaymentEvent> to) {
-                log.debug(String.format("State changed from: %s, to %s", from, to));
+
+                // two accessory variables to prevent NPE in the log statement
+                String fromState = (from != null) ? from.getIds().toString() : "null";
+                String toState = (to != null) ? to.getIds().toString() : "null";
+
+                log.debug(String.format("State changed from: %s, to: %s", fromState, toState));
             }
         };
         config.withConfiguration().listener(adapter);

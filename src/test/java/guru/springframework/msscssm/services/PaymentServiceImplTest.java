@@ -3,6 +3,7 @@ package guru.springframework.msscssm.services;
 import guru.springframework.msscssm.domain.Payment;
 import guru.springframework.msscssm.domain.PaymentState;
 import guru.springframework.msscssm.repository.PaymentRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -14,8 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by ronnen on 30-Jul-2021
@@ -39,8 +39,12 @@ class PaymentServiceImplTest {
     void setUp() {
         payment = Payment.builder()
                 .state(PaymentState.NEW)
-                .id(1L)
                 .build();
+    }
+
+    @AfterEach
+    void tearDown() {
+        reset(repository);
     }
 
     @Test

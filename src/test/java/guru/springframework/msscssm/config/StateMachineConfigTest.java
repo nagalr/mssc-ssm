@@ -10,6 +10,8 @@ import org.springframework.statemachine.config.StateMachineFactory;
 
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
  * Created by ronnen on 29-Jul-2021
  */
@@ -35,7 +37,7 @@ class StateMachineConfigTest {
         sm.sendEvent(PaymentEvent.PRE_AUTH_APPROVED);
 
         System.out.println("After Second State Change: " + sm.getState().getId().toString());
+
+        assertEquals("PRE_AUTH", sm.getState().getId().toString());
    }
-
-
 }

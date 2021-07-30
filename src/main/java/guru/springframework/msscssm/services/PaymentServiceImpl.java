@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
+import org.springframework.statemachine.support.DefaultStateMachineContext;
 import org.springframework.stereotype.Service;
 
 /**
@@ -42,5 +43,34 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public StateMachine<PaymentState, PaymentEvent> declineAuth(Long paymentId) {
         return null;
+    }
+
+    /*
+     Method to restore a State Machine from the db.
+     Usage in cases where we persist the state in a db.
+     */
+    private StateMachine<PaymentState, PaymentEvent> build(Long paymentId) {
+
+        // receives from the db a Payment Object by its ID
+        Payment payment = paymentRepository.getOne(paymentId);
+
+        // Asks the factory for a new StateMachine instance with the Payment Object id
+        StateMachine<PaymentState, PaymentEvent> sm = stateMachineFactory.getStateMachine(payment.getId().toString());
+
+        /*
+         Stops the State-Machine sm region.
+         Resets its state to the 'payment' Object (from the db) state.
+         Starts sm region, and returns it.
+         */
+        sm.stop();
+
+        sm.getStateMachineAccessor()
+                .doWithAllRegions(sma -> {
+                    sma.resetStateMachine(new DefaultStateMachineContext<>(payment.getState(), null, null, null));
+                });
+
+        sm.start();
+
+        return sm;
     }
 }

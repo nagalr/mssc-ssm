@@ -48,6 +48,5 @@ public class StateMachineConfig extends StateMachineConfigurerAdapter<PaymentSta
                 .withExternal().source(PaymentState.NEW).target(PaymentState.PRE_AUTH).event(PaymentEvent.PRE_AUTH_APPROVED)
                 .and()
                 .withExternal().source(PaymentState.NEW).target(PaymentState.PRE_AUTH_ERROR).event(PaymentEvent.PRE_ATH_DECLINE);
-
     }
 }

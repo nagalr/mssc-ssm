@@ -4,6 +4,7 @@ import guru.springframework.msscssm.domain.Payment;
 import guru.springframework.msscssm.domain.PaymentEvent;
 import guru.springframework.msscssm.domain.PaymentState;
 import guru.springframework.msscssm.repository.PaymentRepository;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.statemachine.StateMachine;
@@ -16,15 +17,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Builder
 public class PaymentServiceImpl implements PaymentService {
 
-    private final PaymentRepository paymentRepository;
-    private final StateMachineFactory<PaymentState, PaymentEvent> stateMachineFactory;
+    private PaymentRepository paymentRepository;
+    private StateMachineFactory<PaymentState, PaymentEvent> stateMachineFactory;
 
     @Override
     public Payment newPayment(Payment payment) {
-        payment.setState(PaymentState.NEW);
+            payment.setState(PaymentState.NEW);
         return paymentRepository.save(payment);
     }
 

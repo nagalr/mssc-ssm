@@ -13,6 +13,9 @@ import java.util.EnumSet;
 
 /**
  * Created by ronnen on 29-Jul-2021
+ *
+ * Config class extends the 'StateMachineConfigurerAdapter' class,
+ * and overwrite few if its methods to config the states.
  */
 
 @Slf4j

@@ -32,29 +32,33 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public StateMachine<PaymentState, PaymentEvent> preAuth(Long paymentId) {
+        StateMachine<PaymentState, PaymentEvent> sm = build(paymentId);
         return null;
     }
 
     @Override
     public StateMachine<PaymentState, PaymentEvent> authorizePayment(Long paymentId) {
+        StateMachine<PaymentState, PaymentEvent> sm = build(paymentId);
         return null;
     }
 
     @Override
     public StateMachine<PaymentState, PaymentEvent> declineAuth(Long paymentId) {
+        StateMachine<PaymentState, PaymentEvent> sm = build(paymentId);
         return null;
     }
 
     /*
      Method to restore a State Machine from the db.
      Usage in cases where we persist the state in a db.
+     Retries the Object from the db, set a State-Machine for the state of that Object.
      */
     private StateMachine<PaymentState, PaymentEvent> build(Long paymentId) {
 
-        // receives from the db a Payment Object by its ID
+        /* receives from the db a Payment Object by its ID */
         Payment payment = paymentRepository.getOne(paymentId);
 
-        // Asks the factory for a new StateMachine instance with the Payment Object id
+        /* Asks the factory for a new StateMachine instance with the Payment Object id */
         StateMachine<PaymentState, PaymentEvent> sm = stateMachineFactory.getStateMachine(payment.getId().toString());
 
         /*

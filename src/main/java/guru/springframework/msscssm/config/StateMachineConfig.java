@@ -20,6 +20,11 @@ import java.util.EnumSet;
 @EnableStateMachineFactory
 public class StateMachineConfig extends StateMachineConfigurerAdapter<PaymentState, PaymentEvent> {
 
+    /*
+     Describe the available states.
+     Based on 'PaymentState' (Enum) states, Includes an initial state,
+     and few 'end' terminal states.
+     */
     @Override
     public void configure(StateMachineStateConfigurer<PaymentState, PaymentEvent> states) throws Exception {
         states.withStates()
@@ -30,6 +35,9 @@ public class StateMachineConfig extends StateMachineConfigurerAdapter<PaymentSta
                 .end(PaymentState.PRE_AUTH_ERROR);
     }
 
+    /*
+     Describe the state transitions and which events trigger them.
+     */
     @Override
     public void configure(StateMachineTransitionConfigurer<PaymentState, PaymentEvent> transitions) throws Exception {
         transitions.withExternal().source(PaymentState.NEW).target(PaymentState.NEW).event(PaymentEvent.PRE_AUTHORIZE)

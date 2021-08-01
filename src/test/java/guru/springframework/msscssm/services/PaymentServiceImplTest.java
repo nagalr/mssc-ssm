@@ -1,64 +1,66 @@
 package guru.springframework.msscssm.services;
 
 import guru.springframework.msscssm.domain.Payment;
-import guru.springframework.msscssm.domain.PaymentState;
 import guru.springframework.msscssm.repository.PaymentRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.*;
+import java.math.BigDecimal;
 
 /**
  * Created by ronnen on 30-Jul-2021
  */
 
-@WebMvcTest
+@SpringBootTest
 class PaymentServiceImplTest {
 
     @Autowired
-    MockMvc mockMvc;
-
-    @Mock
-    private PaymentRepository repository;
-
-    @InjectMocks
     private PaymentServiceImpl paymentService;
+
+    @Autowired
+    private PaymentRepository paymentRepository;
 
     Payment payment;
 
     @BeforeEach
     void setUp() {
         payment = Payment.builder()
-                .state(PaymentState.NEW)
+                .amount(new BigDecimal("12.99"))
                 .build();
     }
 
-    @AfterEach
-    void tearDown() {
-        reset(repository);
-    }
-
+    @Transactional
     @Test
-    void newPayment() {
+    void preAuth() {
 
-        // when
-        when(repository.save(any(Payment.class))).thenReturn(payment);
+        Payment savedPayment = paymentService.newPayment(payment);
+        paymentService.preAuth(savedPayment.getId());
 
-        Payment receivedPayment = paymentService.newPayment(Payment.builder().build());
+        Payment preAuthPayment = paymentRepository.getOne(payment.getId());
 
-        String receivedPaymentState = (receivedPayment.getState() != null) ? receivedPayment.getState().toString() : "null";
-
-        // then
-        then(repository).should(times(1)).save(any(Payment.class));
-        assertEquals("NEW", receivedPaymentState);
+        System.out.println(preAuthPayment);
     }
+
+    //    @AfterEach
+//    void tearDown() {
+//        reset(repository);
+//    }
+
+//    @Test
+//    void newPayment() {
+//
+//        // when
+//        when(repository.save(any(Payment.class))).thenReturn(payment);
+//
+//        Payment receivedPayment = paymentService.newPayment(Payment.builder().build());
+//
+//        String receivedPaymentState = (receivedPayment.getState() != null) ? receivedPayment.getState().toString() : "null";
+//
+//        // then
+//        then(repository).should(times(1)).save(any(Payment.class));
+//        assertEquals("NEW", receivedPaymentState);
+//    }
 }

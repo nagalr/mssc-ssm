@@ -5,7 +5,6 @@ import guru.springframework.msscssm.domain.PaymentEvent;
 import guru.springframework.msscssm.domain.PaymentState;
 import guru.springframework.msscssm.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by ronnen on 30-Jul-2021
  */
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
@@ -30,8 +28,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment newPayment(Payment payment) {
-        log.debug(">>> Inside 'newPayment' of PaymentService");
         payment.setState(PaymentState.NEW);
+
         return paymentRepository.save(payment);
     }
 
@@ -39,30 +37,27 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public StateMachine<PaymentState, PaymentEvent> preAuth(Long paymentId) {
         StateMachine<PaymentState, PaymentEvent> sm = build(paymentId);
-
         sendEvent(paymentId, sm, PaymentEvent.PRE_AUTHORIZE);
 
-        return null;
+        return sm;
     }
 
     @Transactional
     @Override
     public StateMachine<PaymentState, PaymentEvent> authorizePayment(Long paymentId) {
         StateMachine<PaymentState, PaymentEvent> sm = build(paymentId);
-
         sendEvent(paymentId, sm, PaymentEvent.AUTH_APPROVED);
 
-        return null;
+        return sm;
     }
 
     @Transactional
     @Override
     public StateMachine<PaymentState, PaymentEvent> declineAuth(Long paymentId) {
         StateMachine<PaymentState, PaymentEvent> sm = build(paymentId);
-
         sendEvent(paymentId, sm, PaymentEvent.AUTH_DECLINE);
 
-        return null;
+        return sm;
     }
 
     private void sendEvent(Long paymentId, StateMachine<PaymentState, PaymentEvent> sm, PaymentEvent event) {
